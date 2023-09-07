@@ -17,41 +17,41 @@ f.png, Krakow, 2016-01-02 10:55:32
 g.jpg, Krakow, 2016-02-29 22:13:11"
 
 def solution(photo_data)
-	file_name_map = Hash.new
-	entries = photo_data.strip.split("\n")
+  file_name_map = Hash.new
+  entries = photo_data.strip.split("\n")
 
-	begin
+  begin
     city_group = group_by_city(entries)
   rescue StandardError => e
     return "Error in group_by_city: #{e.message}"
   end
 
-	city_group.each do |city, values|
-	  count = 1
-	  leading_0s_length = values.length.to_s.length
+  city_group.each do |city, values|
+    count = 1
+    leading_0s_length = values.length.to_s.length
 
-	  values.sort_by { |e| e[1] }.each do |val|
-	  	file_name_map[val[0]] = city + format("%0#{leading_0s_length}d", count) + "." + val[0].split(".")[1]
-	  	count += 1
-	  end
-	end
+    values.sort_by { |e| e[1] }.each do |val|
+      file_name_map[val[0]] = city + format("%0#{leading_0s_length}d", count) + "." + val[0].split(".")[1]
+      count += 1
+    end
+  end
 
-	entries.map { |entry| file_name_map[entry.strip.split(', ')[0]] }.join("\n")
+  entries.map { |entry| file_name_map[entry.strip.split(', ')[0]] }.join("\n")
 end
 
 def group_by_city(entries)
-	city_group = Hash.new { |h, k| h[k] = [] }
+  city_group = Hash.new { |h, k| h[k] = [] }
 
-	entries.each do |entry| 
-		entry_parts = entry.strip.split(', ')
+  entries.each do |entry|
+    entry_parts = entry.strip.split(', ')
 
-		raise "Invalid input string: #{entry}" if entry_parts.length != 3
+    raise "Invalid input string: #{entry}" if entry_parts.length != 3
 
-		file_name, location, time = entry_parts[0], entry_parts[1], Time.parse(entry_parts[2])
-		city_group[location] << [file_name, time]
-	end
+    file_name, location, time = entry_parts[0], entry_parts[1], Time.parse(entry_parts[2])
+    city_group[location] << [file_name, time]
+  end
 
-	city_group
+  city_group
 end
 
 puts solution(input_data)
